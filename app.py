@@ -1,4 +1,6 @@
-import openai
+from openai import OpenAI
+
+client = OpenAI(api_key=OPENAI_API_KEY)
 from flask import Flask, render_template, request
 import pdfplumber
 from docx import Document
@@ -18,14 +20,12 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def analyze_document(document_text):
-    openai.api_key = OPENAI_API_KEY
+    
 
-    response = openai.Completion.create(
-        model="gpt-3-turbo",
-        prompt="Analyze and summarize the following text:\n" + document_text,
-        temperature=0.7,
-        max_tokens=1000,
-    )
+    response = client.completions.create(model="gpt-3-turbo",
+    prompt="Analyze and summarize the following text:\n" + document_text,
+    temperature=0.7,
+    max_tokens=1000)
 
     analysis_text = response["choices"][0]["text"]
     return analysis_text
